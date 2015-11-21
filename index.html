@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Chat</title>
+	<style>
+		*{
+			padding: 0;
+			margin: 0;	
+		}
+		
+		body {
+			background-color: white;
+			color: white;
+			font-family: 'Tahoma';
+		}
+		
+		h2 {
+			letter-spacing: 2px;
+			font-size: 30px;
+			text-shadow: 2px 3px 4px #0097A7;
+			margin-bottom: 10px;
+		}
+		
+		p{
+			font-size: 20px;
+			text-shadow: 2px 3px 4px #0097A7;
+			margin-bottom: 10px;
+		}
+		
+		input[type="text"]{
+			padding: 5px;
+			border: none;
+			border-bottom: solid 2px #B6B6B6;
+			font-weight: bold;
+			color: #0097A7;
+		}
+		
+		input[type="submit"]{
+			padding: 5px;
+			background-color: #FFEB3B;
+			color: #0097A7;
+			border: none;
+			font-weight: bold;
+		}
+		
+		hr{
+			margin-bottom: 10px;
+		}
+		
+		.userChat{
+			color: #727272;
+		}
+		
+		#container {
+			width: 700px;
+		}
+		
+		#chatWindow {
+			height: 300px;
+		}
+		
+		#mainWrapper {
+			display: none;
+			margin: 20px 0 0 20px;
+		}
+		
+		#chatWrapper {
+			float: left;
+			background-color: #00BCD4;
+			padding: 10px;
+			
+		}
+		
+		#userWrapper {
+			float: left;
+			background-color: #00BCD4;
+			padding: 10px;
+			margin-left: 20px;
+			width: 150px;
+			max-height: 200px;
+		}
+		
+		#namesWrapper {
+			float: left;
+			background-color: #00BCD4;
+			padding: 10px;
+			margin: 20px 0 0 20px;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="container">
+
+		<div id="namesWrapper">
+			<h2>Simple Chat</h2>
+			<p>Create Username:</p>
+			<div id="error"></div>
+			<form id="usernameForm">
+				<input id="username" type="text" size="25" autocomplete="off">
+				<input type="submit" value="Submit">
+			</form>
+		</div>
+
+		<div id="mainWrapper">
+			
+
+			<div id="chatWrapper">
+				<h2>Simple Chat</h2>
+				<hr>
+				<div id="chatWindow"></div>
+				<form id="messageForm">
+					<input id="message" type="text" size="35" placeholder="type your message" autocomplete="off">
+					<input type="submit" value="Say it!">
+				</form>
+			</div>
+
+			<div id="userWrapper">
+				<div id="users"></div>
+			</div>
+
+		</div>
+
+	</div>
+	
+	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+		$(function(){
+			'use strict';
+			var socket = io.connect();
+			var $messageForm = $("#messageForm");
+			var $message = $("#message");
+			var $chat = $("#chatWindow");
+			var $usernameForm = $("#usernameForm");
+			var $users = $("#users");
+			var $username = $("#username");
+			var $error = $("#error");
+			
+			$usernameForm.submit((e) => {
+				e.preventDefault();
+				socket.emit("new user", $username.val(), (data) => {
+					if(data){
+						$("#namesWrapper").hide();
+						$("#mainWrapper").show();
+					} else {
+						$error.html("Username is already taken");
+					}
+				});
+				$username.val("");
+			});
+			
+			socket.on("usernames", (data) => {
+				var html = "";
+				for(let i = 1; i < data.length; i++){
+					html += data[i] + "<br>";
+				}
+				
+				$users.html(html);
+				
+				
+			});
+			
+			$messageForm.submit((e) => {
+				e.preventDefault();
+				socket.emit("send message", $message.val());
+				$message.val("");
+			});
+			
+			socket.on("new message", (data) => {
+				$chat.append("<strong class='userChat'>" + data.user + "</strong>: " + data.msg + "<br>");
+			});
+		})
+	</script>
+</body>
+
+</html>
