@@ -154,7 +154,7 @@
 			
 			socket.on("usernames", (data) => {
 				var html = "";
-				for(let i = 1; i < data.length; i++){
+				for(let i = 0; i < data.length; i++){
 					html += data[i] + "<br>";
 				}
 				
