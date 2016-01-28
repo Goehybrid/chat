@@ -130,14 +130,14 @@
 	<script>
 		$(function(){
 			'use strict';
-			var socket = io.connect();
-			var $messageForm = $("#messageForm");
-			var $message = $("#message");
-			var $chat = $("#chatWindow");
-			var $usernameForm = $("#usernameForm");
-			var $users = $("#users");
-			var $username = $("#username");
-			var $error = $("#error");
+			let socket = io.connect();
+			let $messageForm = $("#messageForm");
+			let $message = $("#message");
+			let $chat = $("#chatWindow");
+			let $usernameForm = $("#usernameForm");
+			let $users = $("#users");
+			let $username = $("#username");
+			let $error = $("#error");
 			
 			$usernameForm.submit((e) => {
 				e.preventDefault();
@@ -153,7 +153,7 @@
 			});
 			
 			socket.on("usernames", (data) => {
-				var html = "";
+				let html = "";
 				for(let i = 0; i < data.length; i++){
 					html += data[i] + "<br>";
 				}

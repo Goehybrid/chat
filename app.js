@@ -1,11 +1,11 @@
 'use strict';
 
-var express = require("express");
-var app = express();
-var server = require("http").createServer(app);
-var io = require("socket.io").listen(server);
+let express = require("express");
+let app = express();
+let server = require("http").createServer(app);
+let io = require("socket.io").listen(server);
 
-var usernames = [];
+let usernames = [];
 
 server.listen(process.env.PORT || 3000);
 
